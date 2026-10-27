@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12б — Логарифм интерактив хичээл</title>
+<style>
+:root{--purple:#7654c8;--light:#f3efff;--ink:#25213a;--green:#24845a;--red:#b83d58}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#f6f2ff,#eef7ff);color:var(--ink);line-height:1.55}
+header{background:linear-gradient(120deg,#6c4bc0,#9b70df);color:white;padding:26px 16px;text-align:center}
+header h1{margin:0 0 6px;font-size:clamp(24px,5vw,36px)}header p{margin:0}
+main{max-width:850px;margin:22px auto;padding:0 14px 36px}
+.card{background:white;border-radius:18px;padding:20px;margin:16px 0;box-shadow:0 5px 18px #4b378414}
+h2{color:#6745b4;margin-top:0}.formula{background:var(--light);padding:12px;border-radius:10px;font-size:1.1rem;overflow-wrap:anywhere}
+button{border:0;border-radius:10px;background:var(--purple);color:white;padding:11px 16px;font-size:1rem;cursor:pointer;margin:4px}
+button:hover{filter:brightness(.94)}.option{display:block;width:100%;text-align:left;background:#f4f1fc;color:var(--ink);border:1px solid #ded4fa;margin:8px 0}
+.option:focus{outline:3px solid #c8b5ff}.feedback{font-weight:bold;margin-top:10px}.correct{color:var(--green)}.wrong{color:var(--red)}
+.progress{height:9px;background:#e7e1f6;border-radius:10px;overflow:hidden}.bar{height:100%;background:#7a57ce;width:0%}
+.small{color:#6e6880;font-size:.92rem}.nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between}
+input[type=radio]{margin-right:8px}
+</style>
+</head>
+<body>
+<header><h1>ЛОГАРИФМ</h1><p>12-р анги • Онол, чанар, жишээ бодлого, интерактив сорил</p></header>
+<main>
+<section class="card"><h2>1. Логарифмын үндсэн ойлголт</h2>
+<p>Логарифм нь зэрэгт дэвшүүлэх үйлдлийн урвуу үйлдэл юм. <b>logₐ b = x</b> гэдэг нь <b>aˣ = b</b> гэсэн утгатай.</p>
+<div class="formula">logₐ b = x ⇔ aˣ = b</div>
+<p>Нөхцөл: <b>a &gt; 0, a ≠ 1, b &gt; 0</b>.</p>
+<p><b>Жишээ:</b> log₂ 8 = 3, учир нь 2³ = 8.</p>
+</section>
+<section class="card"><h2>2. Логарифмын үндсэн чанарууд</h2>
+<div class="formula">logₐ 1 = 0</div>
+<div class="formula">logₐ a = 1</div>
+<div class="formula">logₐ (xy) = logₐ x + logₐ y</div>
+<div class="formula">logₐ (x/y) = logₐ x − logₐ y</div>
+<div class="formula">logₐ (xʳ) = r · logₐ x</div>
+<div class="formula">logₐ b = (log꜀ b) / (log꜀ a)</div>
+<p class="small">Эдгээр чанарт логарифмын аргументууд эерэг байх шаардлагатай.</p>
+</section>
+<section class="card"><h2>3. Бодох аргачлал</h2>
+<ol>
+<li>Логарифмын суурь эерэг бөгөөд 1-тэй тэнцүү биш эсэхийг шалгана.</li>
+<li>Аргумент эерэг байх нөхцөлийг бичнэ.</li>
+<li>Боломжтой бол логарифмыг зэрэгт хэлбэрт шилжүүлнэ.</li>
+<li>Ижил суурьтай логарифмын чанарыг хэрэглэнэ.</li>
+<li>Олсон хариуг анхны нөхцөлд орлуулж шалгана.</li>
+</ol>
+</section>
+<section class="card"><h2>4. Жишээ бодлогууд</h2>
+<p><b>Жишээ 1.</b> log₃ 81 = x</p><p>3ˣ = 81 = 3⁴ тул <b>x = 4</b>.</p>
+<p><b>Жишээ 2.</b> log₂ x = 5</p><p>x = 2⁵ тул <b>x = 32</b>.</p>
+<p><b>Жишээ 3.</b> log₅ 25 + log₅ 5</p><p>2 + 1 = <b>3</b>.</p>
+<p><b>Жишээ 4.</b> log₂ x + log₂ 4 = 5</p><p>log₂(4x) = 5 → 4x = 32 → <b>x = 8</b>.</p>
+</section>
+<section class="card" id="quiz"><h2>5. Интерактив сорил — 12 асуулт</h2>
+<p>Нэг хариулт сонгоод “Шалгах” товчийг дарна. Эцэст нь оноогоо харна.</p>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<p id="counter" class="small"></p><h3 id="question"></h3><div id="options"></div>
+<div id="feedback" class="feedback" aria-live="polite"></div>
+<div class="nav"><button id="check">Шалгах</button><button id="next" hidden>Дараагийн асуулт →</button></div>
+<div id="result" hidden></div>
+</section>
+</main>
+<script>
+const qs=[
+{q:"log₂ 8 хэд вэ?",o:["2","3","4","8"],a:1,e:"2³ = 8 тул log₂ 8 = 3."},
+{q:"log₅ 1 хэд вэ?",o:["0","1","5","−1"],a:0,e:"5⁰ = 1 тул log₅ 1 = 0."},
+{q:"log₃ 27 хэд вэ?",o:["2","3","6","9"],a:1,e:"3³ = 27 тул хариу 3."},
+{q:"log₄ 16 хэд вэ?",o:["2","3","4","8"],a:0,e:"4² = 16 тул хариу 2."},
+{q:"log₂ 32 = x бол x хэд вэ?",o:["4","5","6","16"],a:1,e:"2⁵ = 32 тул x = 5."},
+{q:"log₇ 7 хэд вэ?",o:["0","1","7","−1"],a:1,e:"logₐ a = 1."},
+{q:"log₂ 4 + log₂ 8 хэд вэ?",o:["3","4","5","6"],a:2,e:"log₂ 4 = 2, log₂ 8 = 3; нийлбэр 5."},
+{q:"log₃ 81 − log₃ 9 хэд вэ?",o:["1","2","3","4"],a:1,e:"4 − 2 = 2."},
+{q:"log₅ 25 хэд вэ?",o:["1","2","3","5"],a:1,e:"5² = 25 тул хариу 2."},
+{q:"log₂ x = 4 бол x хэд вэ?",o:["8","12","16","32"],a:2,e:"x = 2⁴ = 16."},
+{q:"logₐ b тодорхойлогдохын тулд аль нөхцөл зөв вэ?",o:["a = 1, b > 0","a > 0, a ≠ 1, b > 0","a < 0, b > 0","a > 0, b = 0"],a:1,e:"Суурь a > 0, a ≠ 1, аргумент b > 0 байна."},
+{q:"log₂ x + log₂ 2 = 4 бол x хэд вэ?",o:["4","6","8","16"],a:2,e:"log₂ x + 1 = 4 → log₂ x = 3 → x = 8."}
+];
+let i=0,chosen=null,score=0,checked=false;
+const $=id=>document.getElementById(id);
+function render(){chosen=null;checked=false;$("feedback").textContent="";$("feedback").className="feedback";$("counter").textContent=`Асуулт ${i+1} / ${qs.length}`;$("bar").style.width=(i/qs.length*100)+"%";$("question").textContent=qs[i].q;$("options").innerHTML="";
+qs[i].o.forEach((v,j)=>{let b=document.createElement("button");b.className="option";b.textContent=String.fromCharCode(65+j)+". "+v;b.onclick=()=>{if(!checked){chosen=j;[...$("options").children].forEach(x=>x.style.borderColor="#ded4fa");b.style.borderColor="#7654c8";}};$("options").appendChild(b)});
+$("check").hidden=false;$("next").hidden=true;$("result").hidden=true;
+}
+$("check").onclick=()=>{if(checked)return;if(chosen===null){$("feedback").textContent="Эхлээд нэг хариулт сонгоно уу.";return}checked=true;if(chosen===qs[i].a){score++;$("feedback").textContent="Зөв! "+qs[i].e;$("feedback").className="feedback correct"}else{$("feedback").textContent="Дахин судлаарай. "+qs[i].e;$("feedback").className="feedback wrong"}$("check").hidden=true;$("next").hidden=false;$("next").textContent=i===qs.length-1?"Дүн харах":"Дараагийн асуулт →";};
+$("next").onclick=()=>{if(i<qs.length-1){i++;render()}else{$("bar").style.width="100%";$("question").textContent="Сорил дууслаа!";$("options").innerHTML="";$("counter").textContent="12 асуулт бөглөгдлөө";$("feedback").textContent="";$("check").hidden=true;$("next").hidden=true;$("result").hidden=false;$("result").innerHTML=`<h3>Таны оноо: ${score} / ${qs.length}</h3><p>${score>=10?"Маш сайн!":score>=7?"Сайн байна!":"Онол, чанараа дахин давтаад сорилоо дахин ажиллаарай."}</p><button onclick="i=0;score=0;render()">Дахин эхлэх</button>`}};
+render();
+</script>
+</body>
+</html>
